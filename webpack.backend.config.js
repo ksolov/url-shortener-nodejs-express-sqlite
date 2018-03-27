@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const helpers = require('./helpers');
 const BUILD_PATH = './build/';
 
+
 var webpackConfig = {
     devtool: 'inline-source-map',
     target: 'node',
