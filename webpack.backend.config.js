@@ -7,7 +7,7 @@ const BUILD_PATH = './build/';
 var webpackConfig = {
     devtool: 'inline-source-map',
     target: 'node',
-    entry: helpers.root('src', 'server.js'),
+    entry: helpers.root('src', 'server', 'server.js'),
     node: {
         __filename: true,
         __dirname: true
@@ -15,7 +15,7 @@ var webpackConfig = {
     output: {
         path: helpers.root(BUILD_PATH),
         publicPath: '/',
-        filename: 'start.js',
+        filename: 'server.js',
         libraryTarget: 'commonjs2'
     },
     resolve: {
