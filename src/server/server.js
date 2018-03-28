@@ -3,9 +3,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
-const serverSettings = require('./settings').server;
-const db = require('./db');
-const urlencode = require('./urlencode');
+const serverSettings = require('./config/settings').server;
+const db = require('./db/db');
+const urlencode = require('./helpers/urlencode');
+const renderHTML = require('./helpers/html');
 
 db.connect();
 
@@ -13,7 +14,7 @@ app.use(express.static('build'));
 app.use(bodyParser.json());
 
 app.get('/', function(req, res){
-    res.sendFile(path.resolve('build/index.html'));
+    res.send(renderHTML.renderHTML());
 });
 
 // allow cross origin requests for api GET requests

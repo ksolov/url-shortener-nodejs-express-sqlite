@@ -1,8 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const q = require('q');
-const dbSettings = require('./settings').database;
-const urlencode = require('./urlencode');
+const dbSettings = require('./../config/settings').database;
 let connection = null;
 const db = {};
 

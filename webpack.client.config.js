@@ -29,12 +29,7 @@ const webpackConfigClient = {
             }
         ]
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            inject: 'body',
-            template: 'src/client/index.html'
-        })
-    ]
+    plugins: []
 
 };
 
