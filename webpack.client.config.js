@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const helpers = require('./helpers');
 
 const webpackConfigClient = {
@@ -22,10 +21,6 @@ const webpackConfigClient = {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: /node_modules/
-            },
-            {
-                test: /\.html$/,
-                loader: 'html-loader?minimize=false'
             }
         ]
     },
