@@ -1,7 +1,7 @@
 {
-  "name": "htc-stub-react-redux",
+  "name": "url-shorter",
   "version": "1.0.0",
-  "description": "project stub for fast react-redux app initialization",
+  "description": "project URL shortener",
   "main": "server.js",
   "scripts": {
     "server": "node build/server.js",
