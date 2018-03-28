@@ -11,7 +11,7 @@ import { API } from './api';
         const linkNode = document.getElementById("link");
         linkNode.innerHTML = '';
         errorNode.innerHTML = '';
-        if (value.match(/^(https?:\/\/)?([\w\.]+)\.([a-z]{2,6}\.?)(\/[\w\.]*)*\/?$/)) {
+        if (value.match(/^(https?:\/\/)?([\w\.]+)\.([a-z]{2,6}\.?)/)) {
             const url = value.match(/^(https?:\/\/)/) ? value : 'http://' + value;
             API.longToShort(url).then((res) => {
                 linkNode.innerHTML = res.shortUrl;
