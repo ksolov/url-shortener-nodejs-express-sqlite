@@ -7,7 +7,7 @@ const BUILD_PATH = './build/';
 var webpackConfig = {
     devtool: 'inline-source-map',
     target: 'node',
-    entry: helpers.root('src', 'server', 'server.js'),
+    entry: ['babel-polyfill', helpers.root('src', 'server', 'server.js')],
     node: {
         __filename: true,
         __dirname: true
@@ -31,7 +31,7 @@ var webpackConfig = {
                     loader: 'babel-loader',
                     options: {
                         presets: ['es2015', 'stage-0'],
-                        plugins: ['transform-decorators-legacy']
+                        plugins: ['transform-decorators-legacy', 'transform-async-to-generator']
                     }
                 },
                 exclude: /node_modules/

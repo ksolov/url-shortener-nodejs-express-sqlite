@@ -6,7 +6,6 @@ const app = express();
 const serverSettings = require('./config/settings').server;
 const db = require('./db/db');
 const urlencode = require('./helpers/urlencode');
-const renderHTML = require('./helpers/html');
 
 db.connect();
 
@@ -14,10 +13,9 @@ app.use(express.static('build'));
 app.use(bodyParser.json());
 
 app.get('/', function(req, res){
-    res.send(renderHTML.renderHTML());
+    res.send(path.resolve('build/index.html'));
 });
 
-// allow cross origin requests for api GET requests
 app.get(serverSettings.api + '*', function(req, res, next){
     res.set({
         'Access-Control-Allow-Origin': '*',
@@ -27,7 +25,6 @@ app.get(serverSettings.api + '*', function(req, res, next){
     next();
 });
 
-// allow cross origin requests for api POST requests
 app.post(serverSettings.api + '*', function(req, res, next){
     res.set({
         'Access-Control-Allow-Origin': '*',
@@ -39,67 +36,58 @@ app.post(serverSettings.api + '*', function(req, res, next){
 
 
 //check route
-app.get(serverSettings.api + 'check', function (req, res, next){
+app.get(serverSettings.api + 'check', function (req, res){
     res.json({"status" : "ok"});
 });
 
-app.get(serverSettings.api + 'create', function (req, res, next){
-    db.createTable().then((createRes) => {
-            if(createRes.status == 'success') {
-                res.json({"status": "ok"})
-            }else {
-                res.json({"status" : "fail"});
-            }
-        }
-    );
-
-});
-
-app.post(serverSettings.api + 'longToShort', function (req, res, next) {
-    const url = req.body.url || '';
-    if(url) {
-        db.selectByLongUrl(url).then(selectRes => {
-            if(selectRes.status == 'success') {
-                if (selectRes.result && selectRes.result.length == 0) { //вставляем
-                    db.getMaxId().then(maxRes => {
-                        if(maxRes.status == 'success') {
-                            const newNum = maxRes.result[0].id+1;
-                            const shortUrl = urlencode.encode(newNum);
-                            db.insert('longUrl', url).then(insertRes => {
-                                if(insertRes.status == 'success') {
-                                    res.json({"status" : "ok", shortUrl: serverSettings.host + shortUrl });
-                                } else {
-                                    res.json({"status" : "fail", msg: 'Fail from ' + insertRes.source});
-                                }
-                            });
-                        } else {
-                            res.json({"status" : "fail", msg: 'Fail from ' + maxRes.source});
-                        }
-                    });
-
-                } else {//достаем
-                    const shortUrl = urlencode.encode(selectRes.result[0].rowid);
-                    res.json({"status" : "ok", shortUrl: serverSettings.host + shortUrl });
-                }
-            } else {
-                res.json({"status" : "fail", msg: 'Fail from ' + selectRes.source});
-            }
-        });
-    } else {
-        res.json({"status" : "fail", msg: 'Url is empty'});
+app.get(serverSettings.api + 'create', async function (req, res){
+    try {
+        const create = await db.createTable();
+        res.json({"status": create.status});
+    }
+    catch (e) {
+        res.json({"status" : e.status, smg: e});
     }
 });
 
-app.get('/:encoded_id', function (req, res, next) {
+app.post(serverSettings.api + 'longToShort', async function (req, res) {
+    const url = req.body.url || '';
+    if(url) {
+        try{
+            const selectRes = await db.selectByLongUrl(url);
+            if (selectRes.result && selectRes.result.length == 0) {
+
+                const maxRes = await db.getMaxId();
+                const newNum = maxRes.result && maxRes.result[0].id > 0 ? maxRes.result[0].id+1 : 1;
+                const shortUrl = urlencode.encode(newNum);
+                const insertRes = await db.insert('longUrl', url);
+
+                res.json({"status" : insertRes.status, shortUrl: serverSettings.host + shortUrl });
+
+            } else {
+                const shortUrl = urlencode.encode(selectRes.result[0].rowid);
+                res.json({"status" : "success", shortUrl: serverSettings.host + shortUrl });
+            }
+        }
+        catch (e) {
+            console.log(e);
+            res.json({"status" : e.status, msg: 'Fail from ' + e.source });
+        }
+    } else {
+        res.json({"status" : "error", msg: 'Url is empty'});
+    }
+});
+
+app.get('/:encoded_id', async function (req, res) {
     const encodedId = req.params.encoded_id;
     const id = urlencode.decode(encodedId);
-    db.selectByID(id).then((longRes) => {
-        if(longRes.status == 'success') {
-            res.redirect(longRes.result[0].longUrl);
-        } else {
-            res.redirect(serverSettings.host);
-        }
-    });
+    try {
+        const longRes = await db.selectByID(id);
+        res.redirect(longRes.result.longUrl);
+    }
+    catch (e) {
+        res.redirect(serverSettings.host);
+    }
 });
 
 

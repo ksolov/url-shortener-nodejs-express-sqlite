@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const helpers = require('./helpers');
 
 const webpackConfigClient = {
@@ -24,7 +25,12 @@ const webpackConfigClient = {
             }
         ]
     },
-    plugins: []
+    plugins: [
+        new HtmlWebpackPlugin({
+            inject: 'body',
+            template: 'src/client/index.html'
+        })
+    ]
 
 };
 
