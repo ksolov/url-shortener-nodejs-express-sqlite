@@ -4,7 +4,7 @@
 ```
 npm run start-dev - сборка клиента
 npm run start-server-dev - сборка сервера
-npm run server - запуст сервера
+npm run server - запуск сервера
 ```
 ### Для запуска проекта на проде
 ```
