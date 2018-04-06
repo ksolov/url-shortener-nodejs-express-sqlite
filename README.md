@@ -1,8 +1,7 @@
-# Укорачиватель ссылок на Node.js/Express, SQLite, Webpack 2
+# Url shortener with Node.js/Express, SQLite, Webpack 2
 
-
-Простой сервис по укрорачиванию ссылок типа http://yourdomain.com/wcFf4
 Url shortener like http://yourdomain.com/wcFf4
+Простой сервис по укрорачиванию ссылок типа http://yourdomain.com/wcFf4
 
 ## Запуск проекта
 
